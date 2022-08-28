@@ -44,7 +44,7 @@ def setup_argument_parser() -> ArgumentParser:
 
 
 """ parse target site and get the credentials """
-def parse_target(content: str) -> dict:
+def parse_target(content: str) -> list:
     data: list = []
     for line in content.readlines():
         line_raw = line.replace('\n', '')
