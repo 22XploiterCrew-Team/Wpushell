@@ -18,6 +18,7 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>
 """
 
+import re
 import os
 import sys
 
@@ -39,6 +40,25 @@ def setup_argument_parser() -> ArgumentParser:
     parser.add_argument('-fstdin', '--target-from-stdin', action='store_true', help=SUPPRESS)
 
     return parser
+
+
+""" parse target site and get the credentials """
+def parse_target(content: str) -> dict:
+    data: list = []
+    for line in content.readlines():
+        line_raw = line.replace('\n', '')
+        site = re.findall(r'(.*?) -> ', line_raw)
+        if site:
+            credential = re.findall(r'\[(.*?)::(.*?)\]', line_raw)
+            if credential:
+                data.append({
+                    'site': site[0],
+                    'credential': {
+                        'username': credential[0][0],
+                        'password': credential[0][1]
+                    }
+                })
+    return data
 
 
 """ main entry point """
