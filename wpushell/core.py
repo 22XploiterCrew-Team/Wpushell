@@ -23,6 +23,7 @@ from typing import List
 from wpushell.io_data import InputData
 from wpushell.executor import AsyncioExecutorNoProgress
 from wpushell.executor import AsyncioExecutorWithProgress
+from wpushell.request import ClientRequest
 
 
 class Processor:
@@ -32,6 +33,8 @@ class Processor:
         self.executor = AsyncioExecutorWithProgress()
         if kwargs.get('no_progressbar'):
             self.executor = AsyncioExecutorNoProgress()
+
+        self.request = ClientRequest(kwargs.get('proxy'), kwargs.get('ssl'))
 
     async def worker(self, data: InputData):
         """ worker func """
@@ -44,3 +47,7 @@ class Processor:
             tasks.append((self.worker, [item], {}))
 
         return await self.executor.run(tasks)
+
+    async def close(self) -> None:
+        """ close the session """
+        await self.request.session.close()
