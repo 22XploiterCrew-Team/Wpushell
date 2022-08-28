@@ -27,6 +27,8 @@ from argparse import RawDescriptionHelpFormatter
 from argparse import SUPPRESS
 from pathlib import Path
 
+from wpushell.io_data import InputData
+
 """ setup the argument parser """
 def setup_argument_parser() -> ArgumentParser:
     description = '\n' .join([
@@ -83,8 +85,9 @@ def main(args: list) -> None:
         print('[!] You must enter the target to be executed')
         sys.exit(1)
 
+    input_data: list = []
     for target in data:
-        print(target)
+        input_data.append(InputData(target))
 
 
 """ run main entry point """
