@@ -43,4 +43,4 @@ class Processor:
         for item in data:
             tasks.append((self.worker, [item], {}))
 
-        return await self.executor.run()
+        return await self.executor.run(tasks)
