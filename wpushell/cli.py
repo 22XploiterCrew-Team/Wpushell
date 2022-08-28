@@ -25,6 +25,7 @@ import sys
 from argparse import ArgumentParser
 from argparse import RawDescriptionHelpFormatter
 from argparse import SUPPRESS
+from pathlib import Path
 
 """ setup the argument parser """
 def setup_argument_parser() -> ArgumentParser:
@@ -68,6 +69,22 @@ def main(args: list) -> None:
         arg_parser.print_usage()
         sys.exit(1)
     args = arg_parser.parse_args()
+
+    if args.target_file:
+        if not os.path.exists(f'{Path.cwd()}/{args.target_file}'):
+            print(f'file {args.target_file} not found on your computer')
+            sys.exit(1)
+        with open(f'{Path.cwd()}/{args.target_file}', 'r') as file:
+            data = parse_target(file)
+    elif args.target_from_stdin:
+        print('[!] Reading target from stdin')
+        data = parse_target(sys.stdin)
+    else:
+        print('[!] You must enter the target to be executed')
+        sys.exit(1)
+
+    for target in data:
+        print(target)
 
 
 """ run main entry point """
