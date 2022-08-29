@@ -31,3 +31,33 @@ class InputData:
     def __repr__(self) -> str:
         """ Return string representation of InputData class """
         return str(self.data)
+
+
+class OutputData:
+    """ OutputData class, used to display all executed output """
+    def __init__(self, data: str, status: int, error: str) -> None:
+        """ Initialize the class """
+        self.data = data
+        self.code = status
+        self.error = error
+
+    @property
+    def fields(self):
+        """ Property fields to set the field of output """
+        fields = list(self.__dict__.keys())
+        return fields
+
+    def __str__(self) -> str:
+        """ Return string representation of OutputData class """
+        error, result = '', ''
+        if self.error:
+            error = f' (error: {str(self.error)}'
+
+        for field in self.fields:
+            field_name = field.title().replace('_',' ')
+            field_value = self.__dict__.get(field)
+            if field_value:
+                result += f'{field_name}: {str(field_value)}\n'
+        result += f'{error}'
+
+        return result
