@@ -17,7 +17,13 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>
 """
 
+import os
+import sys
+
 from wpushell.cli import run
 
 if __name__ == '__main__':
-    run()
+    if os.path.basename(sys.argv[0]) == os.path.basename(__file__):
+        if not os.access(sys.argv[0], os.X_OK):
+            os.chmod(sys.argv[0], 0o755)
+        run()
