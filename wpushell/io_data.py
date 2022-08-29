@@ -18,6 +18,9 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>
 """
 
+from typing import List
+
+
 class InputData:
     """ InputData class, which is used to receive or store the given data """
     def __init__(self, data) -> None:
@@ -61,3 +64,15 @@ class OutputData:
         result += f'{error}'
 
         return result
+
+
+class OutputDataList:
+    """ OutputDataList class, used to display a list of output data """
+    def __init__(self, data: InputData, results: List[OutputData]) -> None:
+        """ Initialize the class """
+        self.input_data = data
+        self.results = results
+
+    def __repr__(self) -> str:
+        """ Return string representation of OutputDataList class """
+        return f'Target {self.input_data}:\n' + '----\n' . join(map(str, self.results))
