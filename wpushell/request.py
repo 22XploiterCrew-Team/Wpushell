@@ -30,3 +30,31 @@ class ClientRequest:
         if proxy:
             connector = ProxyConnector.from_url(proxy, ssl=ssl)
         self.session = ClientSession(connector=connector, trust_env=True)
+
+    async def get_cookie(self, url: str, username: str = 'admin', password: str = 'admin') -> dict:
+        """ get the cookie after login into target """
+        url = f'{url}/wp-login.php'
+        data = {
+            'log': username,
+            'pwd': password,
+            'wp-submit': 'Log In',
+            'rememberme': 'forever',
+            'redirect_to': f'{url}/wp-admin',
+            'testcookie': '1'
+        }
+        cookies: dict = {}
+
+        try:
+            request = await self.session.post(url, data=data)
+            status_code = request.status
+            if status_code == 200:
+                for cookie in self.session.cookie_jar:
+                    cookies[cookie.key] = cookie.value
+
+                if bool(cookies) is False and len(cookies) <= 2:
+                    raise Exception('Failed login into the target, please check your credential')
+                return cookies
+            else:
+                raise Exception(f'Server not returned status code 200 OK, returned {status_code}')
+        except Exception as error:
+            raise Exception(error)
