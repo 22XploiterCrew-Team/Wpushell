@@ -21,13 +21,15 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>
 import re
 import os
 import sys
+import asyncio
 
 from argparse import ArgumentParser
 from argparse import RawDescriptionHelpFormatter
 from argparse import SUPPRESS
 from pathlib import Path
 
-from wpushell.io_data import InputData
+from .io_data import InputData
+from .core import Processor
 
 """ setup the argument parser """
 def setup_argument_parser() -> ArgumentParser:
@@ -65,7 +67,7 @@ def parse_target(content: str) -> list:
 
 
 """ main entry point """
-def main(args: list) -> None:
+async def main(args: list) -> None:
     arg_parser = setup_argument_parser()
     if len(args) == 0:
         arg_parser.print_usage()
@@ -89,10 +91,21 @@ def main(args: list) -> None:
     for target in data:
         input_data.append(InputData(target))
 
+    processor = Processor()
+    results = await processor.run(input_data)
+    print(results)
+
+    await processor.close()
+
 
 """ run main entry point """
 def run() -> None:
-    main(sys.argv[1:])
+    loop = asyncio.get_event_loop()
+    try:
+        loop.run_until_complete(main(sys.argv[1:]))
+    except KeyboardInterrupt:
+        print('[!] Program cancelled by user')
+    loop.close()
 
 
 """ call """
