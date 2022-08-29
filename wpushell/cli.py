@@ -59,7 +59,7 @@ def setup_argument_parser() -> ArgumentParser:
     parser.add_argument('-n', '--no-progressbar', action='store_true', default=False, help='disable progress bar output for execution program')
 
     target_group = parser.add_argument_group()
-    target_group.add_argument('-p', '--plugin', action='store', metavar='', default=f'{Path.cwd()}/wpushell.zip', type=FileType('rb'), help='path to wordpress plugin that will be uploaded to the target site (default: %(default)s)')
+    target_group.add_argument('-p', '--plugin', action='store', metavar='', default=f'{Path.cwd()}/shell.zip', type=FileType('rb'), help='path to wordpress plugin that will be uploaded to the target site (default: %(default)s)')
     target_group.add_argument('-s', '--shell-name', action='store', metavar='', default='shell.php', help='name of the backdoor shell that is in the wordpress plugin zip file to be uploaded (default: %(default)s')
 
     request_group = parser.add_argument_group()
