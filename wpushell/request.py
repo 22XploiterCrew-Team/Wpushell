@@ -58,3 +58,27 @@ class ClientRequest:
                 raise Exception(f'Server not returned status code 200 OK, returned {status_code}')
         except Exception as error:
             raise Exception(error)
+
+    async def get_wpnonce(self, url: str, cookies: dict) -> str:
+        """ Take _wpnonce value from target """
+        from bs4 import BeautifulSoup
+
+        url = f'{url}/wp-admin/plugin-install.php?tab=upload'
+
+        try:
+            request = await self.session.get(url, cookies=cookies)
+            status_code = request.status
+            if status_code == 200:
+                content = await request.text()
+                try:
+                    soup = BeautifulSoup(content, 'html.parser')
+                    wpnonce = soup.find('input', {'name': '_wpnonce'})['value']
+                    if wpnonce is None:
+                        raise Exception('Failed to fetch value _wpnonce')
+                    return wpnonce
+                except Exception as err:
+                    raise Exception(err)
+            else:
+                raise Exception(f'Server not returned status code 200 OK, returned {status_code}')
+        except Exception as err:
+            raise Exception(err)
