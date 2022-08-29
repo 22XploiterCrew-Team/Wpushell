@@ -31,6 +31,7 @@ from pathlib import Path
 
 from .io_data import InputData
 from .core import Processor
+from .report import PlainOutput
 
 """ setup the argument parser """
 def setup_argument_parser() -> ArgumentParser:
@@ -46,9 +47,14 @@ def setup_argument_parser() -> ArgumentParser:
     parser.add_argument('-fstdin', '--target-from-stdin', action='store_true', help=SUPPRESS)
     parser.add_argument('-n', '--no-progressbar', action='store_true', default=False, help='disable progress bar output for execution program')
 
-    target_group = parser.add_argument_group('target options')
+    target_group = parser.add_argument_group()
     target_group.add_argument('-p', '--plugin', action='store', metavar='', default=f'{Path.cwd()}/wpushell.zip', type=FileType('rb'), help='path to wordpress plugin that will be uploaded to the target site (default: %(default)s)')
     target_group.add_argument('-s', '--shell-name', action='store', metavar='', default='shell.php', help='name of the backdoor shell that is in the wordpress plugin zip file to be uploaded (default: %(default)s')
+
+    request_group = parser.add_argument_group()
+    request_group.add_argument('-ns', '--no-ssl', action='store_true', default=False, help='disable ssl verification for requests')
+    request_group.add_argument('-t', '--timeout', action='store', metavar='', default=10, help='timeout for a request in seconds (default: %(default)d)')
+    request_group.add_argument('-x', '--proxy', action='store', metavar='', help='make request over a proxy (e.g socks5://127.0.0.1:1337)')
 
     return parser
 
@@ -99,11 +105,15 @@ async def main(args: list) -> None:
 
     processor = Processor(
         no_progressbar=args.no_progressbar,
+        ssl=args.no_ssl,
+        timeout=args.timeout,
+        proxy=args.proxy,
         plugin_content=args.plugin,
         shell_name=args.shell_name
     )
     results = await processor.run(input_data)
-    print(results)
+    report = PlainOutput(results)
+    print(report.put())
 
     await processor.close()
 
