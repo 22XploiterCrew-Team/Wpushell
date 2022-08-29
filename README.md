@@ -15,9 +15,9 @@ Wpushell is a tool used to upload a backdoor shell to a site that uses a WordPre
 Make sure you have Python3 and pip installed.
 
 ### Manually
-1. Clone or [download] (https://github.com/22XploiterCrew/Wpushell.git) repository
+1. Clone or [download] (https://github.com/22XploiterCrew-Team/Wpushell.git) repository
 ```sh
-git clone https://github.com/22XploiterCrew/Wpushell.git
+git clone https://github.com/22XploiterCrew-Team/Wpushell.git
 ```
 
 2. Install dependencies
