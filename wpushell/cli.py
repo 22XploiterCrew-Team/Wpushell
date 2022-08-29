@@ -22,6 +22,7 @@ import re
 import os
 import sys
 import asyncio
+import platform
 
 from argparse import FileType
 from argparse import ArgumentParser
@@ -35,6 +36,15 @@ from .report import PlainOutput
 
 """ setup the argument parser """
 def setup_argument_parser() -> ArgumentParser:
+    from .__version__ import __version__
+    from aiohttp import __version__ as aiohttp_version
+
+    version_string = '\n' . join([
+        f'%(prog)s version {__version__}',
+        f'yield from aiohttp version {aiohttp_version}',
+        f'Python version {platform.python_version()}'
+    ])
+
     description = '\n' .join([
         'Wpushell is a tool used to upload a backdoor shell to a site that uses a WordPress Content Management System with a simple and fast process.',
         '',
@@ -43,6 +53,7 @@ def setup_argument_parser() -> ArgumentParser:
     ])
     parser = ArgumentParser(prog='wpushell', description=description, usage=f'{sys.argv[0]} <target_file> [options]', formatter_class=RawDescriptionHelpFormatter)
 
+    parser.add_argument('-v', '--version', action='version', version=version_string)
     parser.add_argument('target_file', nargs='?', help='list of target sites stored in a file along with the found or valid credentials')
     parser.add_argument('-fstdin', '--target-from-stdin', action='store_true', help=SUPPRESS)
     parser.add_argument('-n', '--no-progressbar', action='store_true', default=False, help='disable progress bar output for execution program')
