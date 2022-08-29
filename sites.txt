@@ -1,0 +1,2 @@
+http://localhost:1337/ -> [username::password]
+https://wordpress.site/ -> [admin::admin]
