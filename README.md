@@ -43,7 +43,7 @@ Or you can clone/download repo and install it from the directory to use as a Pyt
 ```sh
 python3 setup.py install
 ```
-2. Or in a simpler way.
+2. Or in a simpler way (***recommended***).
 ```sh
 pip3 install .
 ```
@@ -80,7 +80,7 @@ Or combine tool with other through input/output pipelining:
 cat randsx/22xploitercrew/wordpress-sites.txt | wpushell -fstdin
 ```
 
-#### Target text format (IMPORTANT)
+#### Target text format (***IMPORTANT***)
 
 To be able to upload your backdoor shell, you must first have managed to find the ***username and password (credentials)*** used to login to the target site.
 <br/>
